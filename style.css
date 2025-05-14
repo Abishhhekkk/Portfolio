@@ -871,44 +871,9 @@ nav ul li a:hover {
     font-size: 1.2rem;
   }
 }
-/* Navbar styling */
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 2rem;
-  flex-wrap: wrap;
-}
-
-.navbar nav {
-  display: flex;
-  gap: 1.2rem;
-}
-
-.menu-toggle {
-  display: none;
-  font-size: 1.8rem;
-  cursor: pointer;
-}
-
-/* Responsive for mobile */
+/* Hide navbar links on small screens */
 @media (max-width: 768px) {
-  .menu-toggle {
-    display: block;
-  }
-
   #navbar-links {
-    display: none;
-    flex-direction: column;
-    width: 100%;
-    margin-top: 1rem;
-  }
-
-  #navbar-links.active {
-    display: flex;
-  }
-
-  .navbar nav a {
-    padding: 0.5rem 0;
+    display: none !important;
   }
 }
