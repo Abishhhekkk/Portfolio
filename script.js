@@ -127,3 +127,4 @@ function typeWriterEffect(text, elementId, speed = 100, holdTime = 2000) {
   element.innerHTML = '';
   setTimeout(type, 500); // initial delay before typing starts
 }
+
