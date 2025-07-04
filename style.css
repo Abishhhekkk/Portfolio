@@ -576,7 +576,7 @@ button:active {
   height: 350px;
   border-radius: 100%; /* Circular shape */
   overflow: hidden;
-  margin-left: 150px;
+  margin-left: 100px;
 }
 
 .passport-photo {
