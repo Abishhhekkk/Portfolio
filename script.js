@@ -1,130 +1,267 @@
-// Typewriter Effect
-const words = ['Electronics Aficionado', 'Aspiring Engineer', 'Committed to Excellence', 'MS ECE @ University of Massachusetts Amherst, United States'];
-let i = 0, j = 0, currentWord = '', isDeleting = false;
+/* ============================================================
+   TYPEWRITER EFFECT
+   ============================================================ */
+
+const words = [
+  'Embedded Systems Engineer',
+  'Computer Architecture Enthusiast',
+  'Hardware & VLSI Engineer',
+  'MS ECE @ University of Massachusetts Amherst'
+];
+
+let wordIndex = 0;
+let charIndex = 0;
+let isDeleting = false;
+
 const typewriter = document.getElementById('typewriter');
 
 function type() {
-  if (i < words.length) {
-    if (!isDeleting && j <= words[i].length) {
-      currentWord = words[i].substring(0, j++);
-      typewriter.innerHTML = currentWord;
-    } else if (isDeleting && j >= 0) {
-      currentWord = words[i].substring(0, j--);
-      typewriter.innerHTML = currentWord;
+
+  if (!typewriter) return;
+
+  const currentWord = words[wordIndex];
+
+  if (!isDeleting) {
+
+    typewriter.textContent =
+      currentWord.substring(0, charIndex + 1);
+
+    charIndex++;
+
+    if (charIndex === currentWord.length) {
+
+      isDeleting = true;
+
+      setTimeout(type, 1800);
+
+      return;
     }
 
-    if (j === words[i].length && !isDeleting) {
-      // Add a delay before deleting
-      setTimeout(() => isDeleting = true, 1000); // 1-second pause before deleting
-    }
-    
-    if (j === 0 && isDeleting) {
+  } else {
+
+    typewriter.textContent =
+      currentWord.substring(0, charIndex - 1);
+
+    charIndex--;
+
+    if (charIndex === 0) {
+
       isDeleting = false;
-      i = (i + 1) % words.length;
+
+      wordIndex =
+        (wordIndex + 1) % words.length;
+
+      setTimeout(type, 400);
+
+      return;
     }
   }
-  setTimeout(type, isDeleting ? 60 : 120);
+
+  setTimeout(
+    type,
+    isDeleting ? 55 : 90
+  );
 }
+
 type();
 
 
+/* ============================================================
+   GSAP — SKILLS SCROLL ANIMATION
+   ============================================================ */
 
-// Animate skills on scroll using GSAP
-gsap.registerPlugin(ScrollTrigger);
+if (
+  typeof gsap !== 'undefined' &&
+  typeof ScrollTrigger !== 'undefined'
+) {
 
-gsap.utils.toArray('.skills-group').forEach((group, index) => {
-  gsap.from(group, {
-    opacity: 0,
-    y: 50,
-    duration: 1,
-    delay: index * 0.2,
-    scrollTrigger: {
-      trigger: group,
-      start: 'top 80%',
-      toggleActions: 'play none none none'
-    }
-  });
-});
+  gsap.registerPlugin(ScrollTrigger);
 
-// Scroll Animation for Experience Cards
-const experienceCards = document.querySelectorAll('.experience-card');
+  gsap.utils
+    .toArray('.skills-group')
+    .forEach((group, index) => {
 
-const checkScroll = () => {
-  experienceCards.forEach(card => {
-    const cardTop = card.getBoundingClientRect().top;
-    if (cardTop < window.innerHeight) {
-      card.classList.add('animate');
-    }
-  });
-};
+      gsap.from(group, {
 
-window.addEventListener('scroll', checkScroll);
-window.addEventListener('load', checkScroll);
+        opacity: 0,
 
-// Project Navigation
-const projects = document.querySelectorAll('.project');
-let currentProjectIndex = 0;
+        y: 35,
 
-// Function to update project visibility
-function updateProjects() {
-  projects.forEach((project, index) => {
-    project.style.display = index === currentProjectIndex ? 'block' : 'none';
-  });
-}
+        duration: 0.8,
 
-// Function to navigate through projects
-function navigateProjects(direction) {
-  if (direction === 'next') {
-    currentProjectIndex = (currentProjectIndex + 1) % projects.length;
-  } else if (direction === 'prev') {
-    currentProjectIndex = (currentProjectIndex - 1 + projects.length) % projects.length;
-  }
-  updateProjects();
-}
+        delay: index * 0.1,
 
-// Initial display of projects
-updateProjects();
+        ease: 'power2.out',
 
-window.onload = () => {
-    // Show popup after 3 seconds
-    setTimeout(() => {
-        document.getElementById('popup').classList.add('show');
-    }, 3000);
+        scrollTrigger: {
 
-    // Close the popup
-    document.getElementById('close-btn').onclick = () => {
-        document.getElementById('popup').classList.remove('show');
-    }
+          trigger: group,
 
-    // Close the popup if clicked outside
-    window.onclick = (event) => {
-        if (event.target === document.getElementById('popup')) {
-            document.getElementById('popup').classList.remove('show');
+          start: 'top 85%',
+
+          toggleActions:
+            'play none none none'
         }
-    }
+
+      });
+
+    });
 }
 
 
-function typeWriterEffect(text, elementId, speed = 100, holdTime = 2000) {
-  const element = document.getElementById(elementId);
-  let i = 0;
+/* ============================================================
+   EXPERIENCE CARD SCROLL ANIMATION
+   ============================================================ */
 
-  function type() {
-    if (i < text.length) {
-      element.innerHTML += text.charAt(i);
-      i++;
-      setTimeout(type, speed);
-    } else {
-      // Pause after full text is displayed
-      setTimeout(() => {
-        // Optional: Do something after holdTime (e.g., remove text or restart)
-        // element.innerHTML = ''; // Uncomment to clear after 2 sec
-      }, holdTime);
+const experienceCards =
+  document.querySelectorAll('.experience-card');
+
+function checkExperienceScroll() {
+
+  experienceCards.forEach(card => {
+
+    const cardTop =
+      card.getBoundingClientRect().top;
+
+    if (
+      cardTop <
+      window.innerHeight * 0.88
+    ) {
+
+      card.classList.add('animate');
+
     }
+
+  });
+
+}
+
+window.addEventListener(
+  'scroll',
+  checkExperienceScroll,
+  { passive: true }
+);
+
+window.addEventListener(
+  'load',
+  checkExperienceScroll
+);
+
+
+/* ============================================================
+   UNDERGRADUATE PROJECTS
+   SHOW / HIDE
+   ============================================================ */
+
+const showUGButton =
+  document.getElementById('show-ug-projects');
+
+const ugProjects =
+  document.getElementById('ug-projects');
+
+if (showUGButton && ugProjects) {
+
+  showUGButton.addEventListener(
+    'click',
+    () => {
+
+      const isOpen =
+        ugProjects.classList.toggle('show');
+
+      showUGButton.classList.toggle(
+        'active',
+        isOpen
+      );
+
+      const buttonText =
+        showUGButton.querySelector(
+          'span:first-child'
+        );
+
+      if (buttonText) {
+
+        buttonText.textContent =
+          isOpen
+            ? 'Hide Undergraduate Projects'
+            : 'Show Undergraduate Projects';
+
+      }
+
+    }
+  );
+
+}
+
+
+/* ============================================================
+   POPUP
+   ============================================================ */
+
+function initializePopup() {
+
+  const popup =
+    document.getElementById('popup');
+
+  const closeButton =
+    document.getElementById('close-btn');
+
+  if (!popup) return;
+
+
+  /* Show popup after 3 seconds */
+
+  setTimeout(() => {
+
+    popup.classList.add('show');
+
+  }, 3000);
+
+
+  /* Close button */
+
+  if (closeButton) {
+
+    closeButton.addEventListener(
+      'click',
+      () => {
+
+        popup.classList.remove('show');
+
+      }
+    );
+
   }
 
-  // Start with empty content and type
-  element.innerHTML = '';
-  setTimeout(type, 500); // initial delay before typing starts
+
+  /* Click outside popup */
+
+  window.addEventListener(
+    'click',
+    (event) => {
+
+      if (event.target === popup) {
+
+        popup.classList.remove('show');
+
+      }
+
+    }
+  );
+
 }
 
+
+/* ============================================================
+   INITIALIZE
+   ============================================================ */
+
+document.addEventListener(
+  'DOMContentLoaded',
+  () => {
+
+    initializePopup();
+
+    checkExperienceScroll();
+
+  }
+);
